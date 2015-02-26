@@ -1,5 +1,12 @@
 = Playground for Go language and Docker
 
+== How to build to Go cross compilers
+
+[source]
+----
+brew reinstall go --with-cc-common
+----
+
 == How to use it
 
 [source]
