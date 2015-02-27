@@ -14,6 +14,7 @@ func (h Hello) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func main() {
     var h Hello
+    fmt.Println("application started")
     err := http.ListenAndServe("0.0.0.0:4000", h)
     if err != nil {
         log.Fatal(err)
