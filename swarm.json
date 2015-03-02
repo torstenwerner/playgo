@@ -1,0 +1,16 @@
+{
+    "app_name": "playweb",
+    "services": [
+        {
+            "service_name": "playweb",
+            "components": [
+                {
+                    "component_name": "playweb",
+                    "image": "registry.giantswarm.io/$username/playweb",
+                    "ports": [ "4000" ],
+                    "domains": { "playweb-$username.gigantic.io": "4000" }
+                }
+            ]
+        }
+    ]
+}
