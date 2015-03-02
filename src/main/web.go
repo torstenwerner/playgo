@@ -9,9 +9,9 @@ import (
 func main() {
     ch := make(chan int, 3)
     go count(ch)
-    h := Hello{ch}
+    server := Hello{ch}
     fmt.Println("application started")
-    err := http.ListenAndServe("0.0.0.0:4000", h)
+    err := http.ListenAndServe("0.0.0.0:4000", server)
     if err != nil {
         log.Fatal(err)
     }
@@ -22,14 +22,14 @@ type Hello struct {
 }
 
 func (h Hello) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "%d: Hello, 世界", h.getCounter())
+    name := r.URL.Path[1:]
+    if name == "" {
+        name = "World"
+    }
+    fmt.Fprintf(w, "Greeting #%d: Hello, %s!", <-h.ch, name)
 }
 
-func (h Hello) getCounter() int {
-    return <-h.ch
-}
-
-func count(ch chan <- int) {
+func count(ch chan<- int) {
     counter := 0
     for {
         ch <- counter
