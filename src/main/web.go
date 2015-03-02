@@ -4,6 +4,7 @@ import (
     "fmt"
     "log"
     "net/http"
+    "encoding/json"
 )
 
 func main() {
@@ -17,6 +18,11 @@ func main() {
     }
 }
 
+type Greeting struct {
+    Number int
+    Name string
+}
+
 type Hello struct {
     ch <-chan int
 }
@@ -26,7 +32,9 @@ func (h Hello) ServeHTTP(w http.ResponseWriter, r *http.Request) {
     if name == "" {
         name = "World"
     }
-    fmt.Fprintf(w, "Greeting #%d: Hello, %s!", <-h.ch, name)
+    greeting := Greeting{<-h.ch, name}
+    asJson, _ := json.Marshal(greeting)
+    fmt.Fprintf(w, "%s", asJson)
 }
 
 func count(ch chan<- int) {

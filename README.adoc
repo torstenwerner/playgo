@@ -12,8 +12,7 @@ brew reinstall go --with-cc-common
 [source]
 ----
 GOOS=linux GOARCH=amd64 go build -o bin/web src/main/web.go
-docker build .
-docker tag -f <id> playweb:latest
+docker build -t playweb:latest .
 docker run --name=playweb -p 4000:4000 --rm playweb
 http $(boot2docker ip):4000
 ----
