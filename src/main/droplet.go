@@ -12,6 +12,7 @@ func main() {
     listFlag := flag.Bool("list", false, "list all droplets")
     createFlag := flag.Bool("create", false, "create a new droplet")
     deleteFlag := flag.Int("delete", -1, "delete a droplet by id")
+    imagesFlage := flag.Bool("images", false, "list all images")
     flag.Parse()
 
     client := getClient()
@@ -32,6 +33,13 @@ func main() {
     }
     if (*deleteFlag > 0) {
         deleteDroplet(client, *deleteFlag)
+    }
+    if (*imagesFlage) {
+        allImages, err := listImages(client)
+        if err != nil {
+            panic(err)
+        }
+        fmt.Printf("images = %v\n", allImages)
     }
 }
 
@@ -74,7 +82,8 @@ func createDroplet(client *godo.Client) (*godo.DropletRoot, error) {
         Region: "lon1",
         Size:   "512mb",
         Image: godo.DropletCreateImage{
-            ID: 11208173,
+            ID: 11220117,
+            //ssl: ID: 11218733,
         },
         SSHKeys: sshKeys,
     }
@@ -85,4 +94,12 @@ func createDroplet(client *godo.Client) (*godo.DropletRoot, error) {
 
 func deleteDroplet(client *godo.Client, id int) {
     client.Droplets.Delete(id)
+}
+
+func listImages(client *godo.Client) ([]godo.Image, error) {
+    allImages, _, err := client.Images.List(&godo.ListOptions{
+        Page: 0,
+        PerPage: 10,
+    })
+    return allImages, err
 }
