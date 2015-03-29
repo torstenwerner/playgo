@@ -10,7 +10,7 @@ func main() {
     if err != nil {
         panic(err)
     }
-    print(conn, "Set", "hello", "26")
+    print(conn, "Set", "hello", 26)
     print(conn, "Incr", "hello")
     print(conn, "Get", "hello")
 }
