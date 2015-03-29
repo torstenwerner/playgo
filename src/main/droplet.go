@@ -23,7 +23,7 @@ func main() {
         if err != nil {
             panic(err)
         }
-        fmt.Printf("droplet ids = %v\n", getDropletIds(allDroplets))
+        fmt.Printf("droplets = %v\n", convertDroplets(allDroplets))
     }
     if (*createFlag) {
         newDroplet, err := createDroplet(client)
@@ -72,12 +72,15 @@ func listDroplets(client *godo.Client) ([]godo.Droplet, error) {
     return allDroplets, err
 }
 
-func getDropletIds(droplets []godo.Droplet) ([]int) {
-    ids := make([]int, len(droplets))
+func convertDroplets(droplets []godo.Droplet) ([]Item) {
+    d := make([]Item, len(droplets))
     for i, droplet := range droplets {
-        ids[i] = droplet.ID
+        d[i] = Item{
+            ID: droplet.ID,
+            name: droplet.Name,
+        }
     }
-    return ids
+    return d
 }
 
 func createDroplet(client *godo.Client) (*godo.DropletRoot, error) {
@@ -120,19 +123,19 @@ func listKeys(client *godo.Client) ([]godo.Key, error) {
     return allKeys, err
 }
 
-type keyType struct {
+type Item struct {
     ID int
     name string
 }
 
-func (k keyType) String() (string) {
-    return fmt.Sprintf("{id: %d, name: \"%s\"}", k.ID, k.name)
+func (item Item) String() (string) {
+    return fmt.Sprintf("{id: %d, name: \"%s\"}", item.ID, item.name)
 }
 
-func convertKeys(keys []godo.Key) ([]keyType) {
-    k := make([]keyType, len(keys))
+func convertKeys(keys []godo.Key) ([]Item) {
+    k := make([]Item, len(keys))
     for i, key := range keys {
-        k[i] = keyType{
+        k[i] = Item{
             ID: key.ID,
             name: key.Name,
         }
