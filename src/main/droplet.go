@@ -12,7 +12,8 @@ func main() {
     listFlag := flag.Bool("list", false, "list all droplets")
     createFlag := flag.Bool("create", false, "create a new droplet")
     deleteFlag := flag.Int("delete", -1, "delete a droplet by id")
-    imagesFlage := flag.Bool("images", false, "list all images")
+    imagesFlag := flag.Bool("images", false, "list all images")
+    keysFlag := flag.Bool("keys", false, "list all keys")
     flag.Parse()
 
     client := getClient()
@@ -22,7 +23,7 @@ func main() {
         if err != nil {
             panic(err)
         }
-        fmt.Printf("droplet ids = %v\n", getIds(allDroplets))
+        fmt.Printf("droplet ids = %v\n", getDropletIds(allDroplets))
     }
     if (*createFlag) {
         newDroplet, err := createDroplet(client)
@@ -34,12 +35,19 @@ func main() {
     if (*deleteFlag > 0) {
         deleteDroplet(client, *deleteFlag)
     }
-    if (*imagesFlage) {
+    if (*imagesFlag) {
         allImages, err := listImages(client)
         if err != nil {
             panic(err)
         }
         fmt.Printf("images = %v\n", allImages)
+    }
+    if (*keysFlag) {
+        allKeys, err := listKeys(client)
+        if err != nil {
+            panic(err)
+        }
+        fmt.Printf("images = %v\n", convertKeys(allKeys))
     }
 }
 
@@ -64,7 +72,7 @@ func listDroplets(client *godo.Client) ([]godo.Droplet, error) {
     return allDroplets, err
 }
 
-func getIds(droplets []godo.Droplet) ([]int) {
+func getDropletIds(droplets []godo.Droplet) ([]int) {
     ids := make([]int, len(droplets))
     for i, droplet := range droplets {
         ids[i] = droplet.ID
@@ -102,4 +110,32 @@ func listImages(client *godo.Client) ([]godo.Image, error) {
         PerPage: 10,
     })
     return allImages, err
+}
+
+func listKeys(client *godo.Client) ([]godo.Key, error) {
+    allKeys, _, err := client.Keys.List(&godo.ListOptions{
+        Page: 0,
+        PerPage: 10,
+    })
+    return allKeys, err
+}
+
+type keyType struct {
+    ID int
+    name string
+}
+
+func (k keyType) String() (string) {
+    return fmt.Sprintf("{id: %d, name: \"%s\"}", k.ID, k.name)
+}
+
+func convertKeys(keys []godo.Key) ([]keyType) {
+    k := make([]keyType, len(keys))
+    for i, key := range keys {
+        k[i] = keyType{
+            ID: key.ID,
+            name: key.Name,
+        }
+    }
+    return k
 }
