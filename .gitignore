@@ -2,3 +2,4 @@
 /bin/
 /atlassian-ide-plugin.xml
 *.iml
+/src/digitalocean/digitalocean

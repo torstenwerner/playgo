@@ -3,7 +3,6 @@ package main
 import (
     "flag"
     "fmt"
-    "os"
     "code.google.com/p/goauth2/oauth"
     "github.com/digitalocean/godo"
 )
@@ -16,7 +15,7 @@ func main() {
     keysFlag := flag.Bool("keys", false, "list all keys")
     flag.Parse()
 
-    client := getClient()
+    client := getClient(Fetch())
 
     if (*listFlag) {
         allDroplets, err := listDroplets(client)
@@ -51,14 +50,9 @@ func main() {
     }
 }
 
-func getClient() *godo.Client {
-    token := os.Getenv("DO_TOKEN")
-    if (token == "") {
-        panic("environment variable DO_TOKEN not set")
-    }
-
+func getClient(config *Config) *godo.Client {
     t := &oauth.Transport{
-        Token: &oauth.Token{AccessToken: token},
+        Token: &oauth.Token{AccessToken: config.Token},
     }
 
     return godo.NewClient(t.Client())
