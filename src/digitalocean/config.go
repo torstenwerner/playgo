@@ -1,15 +1,29 @@
 package main
 
-import "os"
+import (
+    "io/ioutil"
+    "os"
+    "gopkg.in/yaml.v2"
+)
 
 type Config struct {
     Token string
 }
 
 func Fetch() (*Config) {
-    token := os.Getenv("DO_TOKEN")
-    if (token == "") {
-        panic("environment variable DO_TOKEN not set")
+    home := os.Getenv("HOME")
+    if (home == "") {
+        panic("environment variable HOME not set")
     }
-    return &Config{token}
+
+    filename := home + "/.digitalocean.yml"
+    input, err := ioutil.ReadFile(filename)
+    if (err != nil) {
+        panic(err)
+    }
+
+    var config Config
+    yaml.Unmarshal(input, &config)
+
+    return &config
 }
