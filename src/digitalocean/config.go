@@ -8,6 +8,11 @@ import (
 
 type Config struct {
     Token string
+    Name string
+    Image int
+    Region string
+    Size string
+    Key int
 }
 
 func Fetch() (*Config) {

@@ -1,0 +1,8 @@
+# This file should be saved as ~/.digitalocean.yml.
+token: "personal access token: https://cloud.digitalocean.com/settings/applications"
+name: "openvpn"
+image: 11241753
+region: "lon1"
+size: "512mb"
+key: 740966
+

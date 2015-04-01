@@ -15,7 +15,8 @@ func main() {
     keysFlag := flag.Bool("keys", false, "list all keys")
     flag.Parse()
 
-    client := getClient(Fetch())
+    config := Fetch()
+    client := getClient(config)
 
     if (*listFlag) {
         allDroplets, err := listDroplets(client)
@@ -25,7 +26,7 @@ func main() {
         fmt.Printf("droplets = %v\n", convertDroplets(allDroplets))
     }
     if (*createFlag) {
-        newDroplet, err := createDroplet(client)
+        newDroplet, err := createDroplet(client, config)
         if err != nil {
             panic(err)
         }
@@ -77,18 +78,17 @@ func convertDroplets(droplets []godo.Droplet) ([]Item) {
     return d
 }
 
-func createDroplet(client *godo.Client) (*godo.DropletRoot, error) {
+func createDroplet(client *godo.Client, config *Config) (*godo.DropletRoot, error) {
     sshKeys := make([]godo.DropletCreateSSHKey, 1)
     sshKeys[0] = godo.DropletCreateSSHKey{
-        ID: 740966,
+        ID: config.Key,
     }
     createRequest := &godo.DropletCreateRequest{
-        Name:   "squid",
-        Region: "lon1",
-        Size:   "512mb",
+        Name:   config.Name,
+        Region: config.Region,
+        Size:   config.Size,
         Image: godo.DropletCreateImage{
-            ID: 11220117,
-            //ssl: ID: 11218733,
+            ID: config.Image,
         },
         SSHKeys: sshKeys,
     }
