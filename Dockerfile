@@ -3,6 +3,6 @@ MAINTAINER mail.twerner@gmail.com
 
 EXPOSE 4000
 
-ADD bin/web /main
+ADD web /main
 CMD ["/main"]
 
